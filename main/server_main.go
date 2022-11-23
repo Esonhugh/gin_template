@@ -1,7 +1,9 @@
 package main
 
 import (
+	_ "gin_template/module/app"
 	_ "gin_template/module/pong"
+	// New Service Add There [No Delete]
 	"gin_template/server"
 	"gin_template/utils"
 	"os"
