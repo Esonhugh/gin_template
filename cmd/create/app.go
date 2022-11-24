@@ -15,7 +15,6 @@ import (
 
 var (
 	appName string
-	dir     string
 	force   bool
 )
 
@@ -29,13 +28,11 @@ var StartCmd = &cobra.Command{
 			println(err.Error())
 			os.Exit(1)
 		}
-		println("App " + appName + " generate success under " + dir)
 	},
 }
 
 func init() {
 	StartCmd.PersistentFlags().StringVarP(&appName, "name", "n", "", "create a new app with provided name")
-	StartCmd.PersistentFlags().StringVarP(&dir, "path", "p", "module/app", "new file will generate under provided path")
 	StartCmd.PersistentFlags().BoolVarP(&force, "force", "f", false, "Force generate the app")
 }
 
@@ -44,18 +41,19 @@ func load() error {
 		return errors.New("app name should not be empty, use -n")
 	}
 
-	service := path.Join(dir)
-	_ = fs.IsNotExistMkDir(dir)
-
-	if !force && (fs.FileExist(service) || fs.FileExist(path.Join(dir, "service_test.go"))) {
-		return errors.New("target file already exist, use -f flag to cover")
-	}
-
 	m := map[string]string{}
 	m["appNameExport"] = strings.ToUpper(appName[:1]) + appName[1:]
 	m["appName"] = strings.ToLower(appName[:1]) + appName[1:]
 
-	service += "/" + m["appName"] + ".go"
+	dir := path.Join("module", appName)
+
+	_ = fs.IsNotExistMkDir(dir)
+
+	if !force && (fs.FileExist(path.Join(dir, m["appName"]+".go")) || fs.FileExist(path.Join(dir, "service_test.go"))) {
+		return errors.New("target file already exist, use -f flag to cover")
+	}
+
+	service := path.Join(dir, m["appName"]+".go")
 
 	if rt, err := template.ParseFiles("template/service.template"); err != nil {
 		return err
@@ -70,5 +68,6 @@ func load() error {
 			gin_template.PackageName(), m["appName"]), 1)
 	fs.FileCreate(*bytes.NewBufferString(str), "main/server_main.go")
 
+	println("App " + appName + " generate success under " + dir)
 	return nil
 }

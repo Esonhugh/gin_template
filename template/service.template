@@ -37,7 +37,7 @@ func (m *{{.appName}}) PostInit() {
 
 func (m *{{.appName}}) Serve(server *server.Server) {
 	// 注册服务函数部分
-	server.HttpEngine.GET("/{{.appName}}", handle{{.appName}})
+	server.HttpEngine.GET("/{{.appName}}", {{.appName}}Handler)
 }
 
 func (m *{{.appName}}) Start(server *server.Server) {
@@ -59,7 +59,7 @@ func (m *{{.appName}}) Stop(server *server.Server, wg *sync.WaitGroup) {
 	// 在此处应该释放相应的资源或者对状态进行保存
 }
 
-func handle{{.appName}}(c *gin.Context) {
+func {{.appName}}Handler (c *gin.Context) {
 	c.JSON(200, gin.H{
 		"msg": "pong",
 		"User-Agent": c.GetHeader("User-Agent"),

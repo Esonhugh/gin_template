@@ -1,6 +1,7 @@
 package server
 
 import (
+	"gin_template/server/database"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"sync"
@@ -10,17 +11,33 @@ var Instance *Server
 
 type Server struct {
 	HttpEngine *gin.Engine
+	DataSource database.GlobalDB
+	// More Service like database service
 }
 
 var logger = logrus.WithField("server", "internal")
 
 // Init 快速初始化
+// Adding in init function
 func Init() {
+	logger.Info("Starting Register Server Instance")
+
+	logger.Info("initializing HTTP server instance ...")
 	gin.SetMode(gin.ReleaseMode)
 	httpEngine := gin.New()
 	httpEngine.Use(ginRequestLog(), gin.Recovery())
+	logger.Info("HTTP instance complete")
+
+	logger.Info("initializing DataSource instance ...")
+	err := database.Init()
+	if err != nil {
+		logger.Fatal(err)
+	}
+	logger.Info("DataSource instance complete")
+
 	Instance = &Server{
 		HttpEngine: httpEngine,
+		DataSource: database.GlobalDatabase,
 	}
 }
 
