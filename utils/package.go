@@ -1,4 +1,4 @@
-package gin_template
+package utils
 
 func PackageName() string {
 	return "gin_template"

@@ -12,6 +12,7 @@ var Instance *Server
 type Server struct {
 	HttpEngine *gin.Engine
 	DataSource database.GlobalDB
+	APIRouter  *gin.RouterGroup
 	// More Service like database service
 }
 
@@ -37,6 +38,7 @@ func Init() {
 
 	Instance = &Server{
 		HttpEngine: httpEngine,
+		APIRouter:  httpEngine.Group("/api"),
 		DataSource: database.GlobalDatabase,
 	}
 }
@@ -46,7 +48,7 @@ func Run() {
 	go func() {
 		logger.Info("http engine starting...")
 		// Running Port 9955 may need Change.
-		if err := Instance.HttpEngine.Run("127.0.0.1:9955"); err != nil {
+		if err := Instance.HttpEngine.Run("0.0.0.0:9955"); err != nil {
 			logger.Fatal(err)
 		} else {
 			logger.Info("http engine running...")

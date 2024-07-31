@@ -1,7 +1,7 @@
 package config
 
 import (
-	"gin_template"
+	"gin_template/utils"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"log"
@@ -24,7 +24,7 @@ func Init() {
 	GlobalConfig.SetConfigType("yaml")
 	GlobalConfig.AddConfigPath(".")
 	GlobalConfig.AddConfigPath("../") // For Debug
-	GlobalConfig.AddConfigPath("/etc/" + gin_template.PackageName())
+	GlobalConfig.AddConfigPath("/etc/" + utils.PackageName())
 
 	err := GlobalConfig.ReadInConfig()
 	if err != nil {

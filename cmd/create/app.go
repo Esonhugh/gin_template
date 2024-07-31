@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"gin_template"
-	fs "gin_template/utils"
+	"gin_template/utils"
+	"gin_template/utils/file"
 	"github.com/spf13/cobra"
 	"os"
 	"path"
@@ -47,9 +47,9 @@ func load() error {
 
 	dir := path.Join("module", appName)
 
-	_ = fs.IsNotExistMkDir(dir)
+	_ = file.IsNotExistMkDir(dir)
 
-	if !force && (fs.FileExist(path.Join(dir, m["appName"]+".go")) || fs.FileExist(path.Join(dir, "service_test.go"))) {
+	if !force && (file.FileExist(path.Join(dir, m["appName"]+".go")) || file.FileExist(path.Join(dir, "service_test.go"))) {
 		return errors.New("target file already exist, use -f flag to cover")
 	}
 
@@ -60,13 +60,16 @@ func load() error {
 	} else {
 		var b bytes.Buffer
 		_ = rt.Execute(&b, m)
-		fs.FileCreate(b, service)
+		file.FileCreate(b, service)
 	}
-	str := string(fs.ReadFile("main/server_main.go"))
+
+	serverMain := path.Join(
+		"cmd", "serve", "server.go")
+	str := string(file.ReadFile(serverMain))
 	str = strings.Replace(str, "\t// New Service Add There [No Delete]\n",
 		fmt.Sprintf("\t_ \"%v/module/%v\"\n\t// New Service Add There [No Delete]\n",
-			gin_template.PackageName(), m["appName"]), 1)
-	fs.FileCreate(*bytes.NewBufferString(str), "main/server_main.go")
+			utils.PackageName(), m["appName"]), 1)
+	file.FileCreate(*bytes.NewBufferString(str), serverMain)
 
 	println("App " + appName + " generate success under " + dir)
 	return nil

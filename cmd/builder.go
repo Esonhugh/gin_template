@@ -1,8 +1,11 @@
 package cmd
 
-import "os"
-import "github.com/spf13/cobra"
-import "gin_template/cmd/create"
+import (
+	"gin_template/cmd/create"
+	"gin_template/cmd/serve"
+	"github.com/spf13/cobra"
+	"os"
+)
 
 var rootCmd = &cobra.Command{
 	Use:          "app",
@@ -13,6 +16,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(create.StartCmd)
+	rootCmd.AddCommand(serve.ServerCmd)
 }
 
 func Execute() {
