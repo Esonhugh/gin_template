@@ -23,6 +23,7 @@ var ServerCmd = &cobra.Command{
 }
 
 func ServerRun() {
+	// config.Init() // if you need read config
 	server.Init()
 
 	server.StartService()
