@@ -11,5 +11,6 @@ type GlobalDB struct {
 }
 
 func Init() error {
+	// mysql.CreateMysql()
 	return nil
 }

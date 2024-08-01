@@ -1,10 +1,12 @@
 package cmd
 
 import (
-	"gin_template/cmd/create"
+	"gin_template/cmd/createapp"
+	"gin_template/cmd/newroute"
 	"gin_template/cmd/serve"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -15,8 +17,9 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(create.StartCmd)
+	rootCmd.AddCommand(createapp.StartCmd)
 	rootCmd.AddCommand(serve.ServerCmd)
+	rootCmd.AddCommand(newroute.RouterCmd)
 }
 
 func Execute() {

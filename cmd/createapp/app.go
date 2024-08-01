@@ -1,4 +1,4 @@
-package create
+package createapp
 
 import (
 	"bytes"
