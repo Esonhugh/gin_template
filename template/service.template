@@ -2,6 +2,7 @@ package {{.appName}}
 
 import (
 	"gin_template/server"
+	"github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"sync"
 )
@@ -14,11 +15,12 @@ func init() {
 var instance *{{.appName}}
 
 type {{.appName}} struct {
+    log *logrus.Entry
 }
 
 func (m *{{.appName}}) GetModuleInfo() server.ModuleInfo {
 	return server.ModuleInfo{
-		ID:       "internal.{{.appName}}",
+		ID:       "module.{{.appName}}",
 		Instance: instance,
 	}
 }
@@ -27,6 +29,7 @@ func (m *{{.appName}}) Init() {
 	// 初始化过程
 	// 在此处可以进行 Module 的初始化配置
 	// 如配置读取
+	m.log = logrus.WithField("module", "{{.appName}}")
 }
 
 func (m *{{.appName}}) PostInit() {
