@@ -1,10 +1,11 @@
 package server
 
 import (
+	"sync"
+
 	"gin_template/server/database"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"sync"
 )
 
 var Instance *Server
@@ -65,7 +66,7 @@ func StartService() {
 		mi.Instance.Init()
 	}
 	for _, mi := range modules {
-		mi.Instance.PostInit()
+		mi.Instance.PostInit(Instance)
 	}
 	logger.Info("all modules initialized")
 

@@ -12,5 +12,6 @@ type GlobalDB struct {
 
 func Init() error {
 	// mysql.CreateMysql()
+	// GlobalDatabase.MainDB.Logger = dblogger
 	return nil
 }

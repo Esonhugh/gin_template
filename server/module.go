@@ -23,7 +23,7 @@ type Module interface {
 	// PostInit 第二次初始化
 	// 调用该函数时，所有 Module 都已完成第一段初始化过程
 	// 方便进行跨Module调用
-	PostInit()
+	PostInit(server *Server)
 
 	// Serve 向Bot注册服务函数
 	// 结束后调用 Start

@@ -1,13 +1,14 @@
 package serve
 
 import (
-	// New Service Add There [No Delete]
+	"os"
+	"os/signal"
+
 	_ "gin_template/module/health"
+	// New Service Add There [No Delete]
 	"gin_template/server"
 	"gin_template/utils/log"
 	"github.com/spf13/cobra"
-	"os"
-	"os/signal"
 )
 
 func init() {
