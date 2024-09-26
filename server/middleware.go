@@ -1,12 +1,28 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 var ginLogger = logrus.WithField("server", "gin")
+
+func GetTraceID(c *gin.Context) string {
+	traceID, _ := c.Get("request_trace_id")
+	return traceID.(string)
+}
+
+func CreateTraceLogger(log *logrus.Entry, c *gin.Context) *logrus.Entry {
+	traceID := GetTraceID(c)
+	return log.WithField("trace_id", traceID)
+}
+func TraceRequest(c *gin.Context) {
+	uid := uuid.New()
+	c.Set("request_trace_id", uid.String())
+}
 
 func ginRequestLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -35,12 +51,13 @@ func ginRequestLog() gin.HandlerFunc {
 		clientIP := c.ClientIP()
 
 		// 日志格式
-		ginLogger.Infof("| %3d | %13v | %15s | %s | %s |",
+		ginLogger.Infof("| %3d | %13v | %15s | %s | %s | trace_id=%s",
 			statusCode,
 			latencyTime,
 			clientIP,
 			reqMethod,
 			reqUri,
+			GetTraceID(c),
 		)
 	}
 }

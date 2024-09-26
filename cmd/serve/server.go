@@ -6,12 +6,14 @@ import (
 
 	_ "gin_template/module/health"
 	// New Service Add There [No Delete]
+	"gin_template/cmd"
 	"gin_template/server"
 	"gin_template/utils/log"
 	"github.com/spf13/cobra"
 )
 
 func init() {
+	cmd.RootCmd.AddCommand(ServerCmd)
 	log.WriteLogToFS()
 }
 

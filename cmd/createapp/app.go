@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"gin_template/utils"
-	"gin_template/utils/file"
-	"github.com/spf13/cobra"
 	"os"
 	"path"
 	"strings"
 	"text/template"
+
+	"gin_template/cmd"
+	"gin_template/utils"
+	"gin_template/utils/file"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -34,6 +36,7 @@ var StartCmd = &cobra.Command{
 func init() {
 	StartCmd.PersistentFlags().StringVarP(&appName, "name", "n", "", "create a new app with provided name")
 	StartCmd.PersistentFlags().BoolVarP(&force, "force", "f", false, "Force generate the app")
+	cmd.RootCmd.AddCommand(StartCmd)
 }
 
 func load() error {

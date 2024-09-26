@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"gin_template/cmd"
 	"gin_template/server"
 	"gin_template/utils/types"
 
@@ -17,9 +18,16 @@ var (
 	_ = types.RouterGenerator(__ROUTER__)
 )
 
-func __ROUTER__ (log *logrus.Entry, server *server.Server) gin.HandlerFunc {
+func __ROUTER__ (l *logrus.Entry, server *server.Server) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		_ = server.DataSource.MainDB 
+		log := s.CreateTraceLogger(l, c)
+		_ = server.DataSource.MainDB
+		c.JSON(200, gin.H{
+			"msg":        "pong",
+			"User-Agent": c.GetHeader("User-Agent"),
+		})
+		log.Info("health check")
+		return
 	}
 }
 `
@@ -39,6 +47,7 @@ func init() {
 	RouterCmd.PersistentFlags().StringVarP(
 		&router, "router", "n", "ping", "Router handler generate functions",
 	)
+	cmd.RootCmd.AddCommand(RouterCmd)
 }
 
 var RouterCmd = &cobra.Command{

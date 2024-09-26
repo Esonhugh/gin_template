@@ -27,7 +27,7 @@ func Init() {
 	logger.Info("initializing HTTP server instance ...")
 	gin.SetMode(gin.ReleaseMode)
 	httpEngine := gin.New()
-	httpEngine.Use(ginRequestLog(), gin.Recovery())
+	httpEngine.Use(TraceRequest, ginRequestLog(), gin.Recovery())
 	logger.Info("HTTP instance complete")
 
 	logger.Info("initializing DataSource instance ...")

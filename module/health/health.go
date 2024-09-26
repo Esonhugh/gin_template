@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"gin_template/server"
+	s "gin_template/server"
 	"gin_template/utils/types"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -68,14 +69,15 @@ var (
 	_ = types.RouterGenerator(healthHandler)
 )
 
-func healthHandler(log *logrus.Entry, server *server.Server) gin.HandlerFunc {
+func healthHandler(l *logrus.Entry, server *server.Server) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		log := s.CreateTraceLogger(l, c)
 		_ = server.DataSource.MainDB
 		c.JSON(200, gin.H{
 			"msg":        "pong",
 			"User-Agent": c.GetHeader("User-Agent"),
 		})
-		instance.log.Println("Data")
+		log.Info("health check")
 		return
 	}
 }
