@@ -25,6 +25,7 @@ var ServerCmd = &cobra.Command{
 
 func ServerRun() {
 	// config.Init() // if you need read config
+	// logrus.StandardLogger().SetLevel(logrus.TraceLevel)
 	server.Init()
 
 	server.StartService()
