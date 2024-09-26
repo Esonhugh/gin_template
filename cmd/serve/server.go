@@ -5,6 +5,7 @@ import (
 	"os/signal"
 
 	_ "gin_template/module/health"
+	_ "gin_template/module/test"
 	// New Service Add There [No Delete]
 	"gin_template/cmd"
 	"gin_template/server"

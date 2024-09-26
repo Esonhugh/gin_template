@@ -4,6 +4,8 @@ import (
 	"gin_template/server"
 	"github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
+	"gin_template/utils/types"
+	s "gin_template/server"
 	"sync"
 )
 
@@ -67,14 +69,16 @@ var (
 )
 
 
-func {{.appName}}Handler(log *logrus.Entry, server *server.Server) gin.HandlerFunc {
-        return func(c *gin.Context) {
-            _ = server.DataSource.MainDB
-	        c.JSON(200, gin.H{
-		        "msg": "pong",
-		        "User-Agent": c.GetHeader("User-Agent"),
-	        })
-	        return
-        }
+func {{.appName}}Handler(l *logrus.Entry, server *server.Server) gin.HandlerFunc {
+  	return func(c *gin.Context) {
+  		log := s.CreateTraceLogger(l, c)
+  		_ = server.DataSource.MainDB
+  		c.JSON(200, gin.H{
+  			"msg":        "pong",
+  			"User-Agent": c.GetHeader("User-Agent"),
+  		})
+  		log.Info("health check")
+  		return
+  	}
 }
 

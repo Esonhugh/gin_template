@@ -14,6 +14,11 @@ import (
 )
 
 var Template = `
+// s "gin_template/server"
+// 
+
+server.HttpEngine.GET("/", __ROUTER__(m.log.WithField("func", "__ROUTER__"), server))
+
 var (
 	_ = types.RouterGenerator(__ROUTER__)
 )
