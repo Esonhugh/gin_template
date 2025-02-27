@@ -9,12 +9,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// GetModuleLogger - 提供一个为 Module 使用的 logrus.Entry
-// 包含 logrus.Fields
-func GetModuleLogger(name string) *logrus.Entry {
-	return logrus.WithField("module", name)
-}
-
 // WriteLogToFS 将日志转储至文件
 // 请务必在 init() 阶段调用此函数
 // 否则会出现日志缺失
@@ -39,6 +33,7 @@ func WriteLogToPath(p string) {
 	}
 	logrus.AddHook(lfshook.NewHook(
 		lfshook.WriterMap{
+			// ToDo: add debugLevel to writer
 			logrus.InfoLevel:  writer,
 			logrus.ErrorLevel: writer,
 			logrus.FatalLevel: writer,

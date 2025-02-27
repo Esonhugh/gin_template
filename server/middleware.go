@@ -10,15 +10,16 @@ import (
 
 var ginLogger = logrus.WithField("server", "gin")
 
+func CreateTraceLogger(log *logrus.Entry, c *gin.Context) *logrus.Entry {
+	traceID := GetTraceID(c)
+	return log.WithField("trace_id", traceID)
+}
+
 func GetTraceID(c *gin.Context) string {
 	traceID, _ := c.Get("request_trace_id")
 	return traceID.(string)
 }
 
-func CreateTraceLogger(log *logrus.Entry, c *gin.Context) *logrus.Entry {
-	traceID := GetTraceID(c)
-	return log.WithField("trace_id", traceID)
-}
 func TraceRequest(c *gin.Context) {
 	uid := uuid.New()
 	c.Set("request_trace_id", uid.String())

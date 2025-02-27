@@ -12,6 +12,6 @@ type GlobalDB struct {
 
 func Init() error {
 	// mysql.CreateMysql()
-	// GlobalDatabase.MainDB.Logger = dblogger
+	// GlobalDatabase.MainDB.Logger = New(dblogger.WithField("db", "main"))
 	return nil
 }

@@ -1,14 +1,18 @@
 package config
 
 import (
+	"github.com/sirupsen/logrus"
+
 	"gin_template/utils"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
-	"log"
 )
 
+var log = logrus.WithField("module", "config").WithField("server", "internal")
+
 type Config struct {
-	*viper.Viper
+	Viper *viper.Viper
+	*ConfigContent
 }
 
 // GlobalConfig 默认全局配置
@@ -18,15 +22,16 @@ var GlobalConfig *Config
 
 func Init() {
 	GlobalConfig = &Config{
-		viper.New(),
+		Viper: viper.New(),
 	}
-	GlobalConfig.SetConfigName("app")
-	GlobalConfig.SetConfigType("yaml")
-	GlobalConfig.AddConfigPath(".")
-	GlobalConfig.AddConfigPath("../") // For Debug
-	GlobalConfig.AddConfigPath("/etc/" + utils.PackageName())
+	GlobalConfig.Viper.SetConfigName("app")
+	GlobalConfig.Viper.SetConfigType("yaml")
+	GlobalConfig.Viper.AddConfigPath(".")
+	GlobalConfig.Viper.AddConfigPath("../")    // For Debug
+	GlobalConfig.Viper.AddConfigPath("../../") // For Debug
+	GlobalConfig.Viper.AddConfigPath("/etc/" + utils.PackageName())
 
-	err := GlobalConfig.ReadInConfig()
+	err := GlobalConfig.Viper.ReadInConfig()
 	if err != nil {
 		log.Panic("Config Reading Error", err)
 	}
@@ -35,8 +40,14 @@ func Init() {
 	})
 	// hot Change.
 	viper.WatchConfig()
+	updateConfig()
 }
 
 func updateConfig() {
 	// ToDo: When New Config Added.
+	err := GlobalConfig.Viper.Unmarshal(&GlobalConfig.ConfigContent)
+	if err != nil {
+		log.Warnf("Config Reading Error", err)
+	}
+	// database.reInit()
 }
