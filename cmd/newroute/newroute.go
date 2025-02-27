@@ -1,67 +1,56 @@
 package newroute
 
 import (
+	"bytes"
+	_ "embed"
 	"fmt"
+	"gin_template/utils/file"
 	"strings"
 
 	"gin_template/cmd"
-	"gin_template/server"
-	"gin_template/utils/types"
-
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
-var Template = `
-// s "gin_template/server"
-// 
-
-server.HttpEngine.GET("/", __ROUTER__(m.log.WithField("func", "__ROUTER__"), server))
-
-var (
-	_ = types.RouterGenerator(__ROUTER__)
-)
-
-func __ROUTER__ (l *logrus.Entry, server *server.Server) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		log := s.CreateTraceLogger(l, c)
-		_ = server.DataSource.MainDB
-		c.JSON(200, gin.H{
-			"msg":        "pong",
-			"User-Agent": c.GetHeader("User-Agent"),
-		})
-		log.Info("health check")
-		return
-	}
-}
-`
-
-func TestRouter(log *logrus.Entry, server *server.Server) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		_ = server.DataSource.MainDB
-	}
-}
-
-var (
-	_      = types.RouterGenerator(TestRouter)
-	router string
-)
+var appName string
 
 func init() {
-	RouterCmd.PersistentFlags().StringVarP(
-		&router, "router", "n", "ping", "Router handler generate functions",
-	)
 	cmd.RootCmd.AddCommand(RouterCmd)
+	RouterCmd.PersistentFlags().StringVarP(&appName, "app", "a", "", "app name")
 }
 
 var RouterCmd = &cobra.Command{
 	Use:   "route",
 	Short: "Create new router function ",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(strings.ReplaceAll(
-			Template,
-			"__ROUTER__",
-			router))
+		if len(args) < 1 {
+			println("router name should not be empty! ")
+			return
+		}
+		if appName != "" {
+			_ = file.IsNotExistMkDir("module/" + appName)
+		}
+		Template := string(file.ReadFile("template/router.go"))
+		for _, router := range args {
+			routerContent := strings.ReplaceAll(
+				Template,
+				"__ROUTER__",
+				router)
+			if appName != "" {
+				routerContent = strings.ReplaceAll(
+					routerContent,
+					"__APPNAME__",
+					appName)
+				fn := "module/" + appName + "/" + router + ".go"
+				if file.FileExist(fn) {
+					println("target file '" + fn + "' already exist, skipped")
+					continue
+				}
+				var b = bytes.NewBufferString(routerContent)
+				file.FileCreate(*b, fn)
+				println("create file '" + fn + "' success")
+			} else {
+				fmt.Println(routerContent)
+			}
+		}
 	},
 }
