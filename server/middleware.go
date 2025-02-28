@@ -1,6 +1,8 @@
 package server
 
 import (
+	"gin_template/server/database"
+	"gorm.io/gorm"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -8,7 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var ginLogger = logrus.WithField("server", "gin")
+var ginLogger = logrus.WithField("service", "gin")
 
 func CreateTraceLogger(log *logrus.Entry, c *gin.Context) *logrus.Entry {
 	traceID := GetTraceID(c)
@@ -23,6 +25,11 @@ func GetTraceID(c *gin.Context) string {
 func TraceRequest(c *gin.Context) {
 	uid := uuid.New()
 	c.Set("request_trace_id", uid.String())
+}
+
+func WarpDBWithLogger(log *logrus.Entry, db *gorm.DB) *gorm.DB {
+	db.Logger = database.NewLogger(log.WithField("service", "database"))
+	return db
 }
 
 func ginRequestLog() gin.HandlerFunc {

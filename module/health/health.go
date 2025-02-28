@@ -66,13 +66,13 @@ func (m *health) Stop(server *server.Server, wg *sync.WaitGroup) {
 }
 
 var (
-	_ = types.RouterGenerator(healthHandler)
+	_ = types.GinRouter(healthHandler)
 )
 
 func healthHandler(l *logrus.Entry, server *server.Server) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log := s.CreateTraceLogger(l, c)
-		_ = server.DataSource.MainDB
+		_ = s.WarpDBWithLogger(log.WithField("db", "main"), server.DataSource.MainDB)
 		c.JSON(200, gin.H{
 			"msg":        "pong",
 			"User-Agent": c.GetHeader("User-Agent"),

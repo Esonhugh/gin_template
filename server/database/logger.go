@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm/utils"
 )
 
-var dblogger = log.WithField("server", "database")
+var dblogger = log.WithField("service", "database")
 
 type Logger struct {
 	l                     *log.Entry
@@ -21,7 +21,7 @@ type Logger struct {
 	Debug                 bool
 }
 
-func New(logEntry *log.Entry) *Logger {
+func NewLogger(logEntry *log.Entry) *Logger {
 	if logEntry == nil {
 		log.Panic("Log Entry is empty")
 		return nil

@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var log = logrus.WithField("module", "config").WithField("server", "internal")
+var log = logrus.WithField("service", "config")
 
 type Config struct {
 	Viper *viper.Viper

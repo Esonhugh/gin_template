@@ -13,13 +13,13 @@ func Register__ROUTER__(m *__APPNAME__, server *server.Server) {
 }
 
 var (
-	_ = types.RouterGenerator(__ROUTER__)
+	_ = types.GinRouter(__ROUTER__)
 )
 
 func __ROUTER__(l *logrus.Entry, server *server.Server) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log := s.CreateTraceLogger(l, c)
-		_ = server.DataSource.MainDB
+		_ = s.WarpDBWithLogger(log.WithField("db", "main"), server.DataSource.MainDB)
 		c.JSON(200, gin.H{
 			"msg":        "pong",
 			"User-Agent": c.GetHeader("User-Agent"),

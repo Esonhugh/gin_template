@@ -65,13 +65,13 @@ func (m *__APPNAME__) Stop(server *server.Server, wg *sync.WaitGroup) {
 }
 
 var (
-	_ = types.RouterGenerator(__APPNAME__Handler)
+	_ = types.GinRouter(__APPNAME__Handler)
 )
 
 func __APPNAME__Handler(l *logrus.Entry, server *server.Server) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log := s.CreateTraceLogger(l, c)
-		_ = server.DataSource.MainDB
+		_ = s.WarpDBWithLogger(log.WithField("db", "main"), server.DataSource.MainDB)
 		c.JSON(200, gin.H{
 			"msg":        "pong",
 			"User-Agent": c.GetHeader("User-Agent"),

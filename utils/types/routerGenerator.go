@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type RouterGenerator func(
+type GinRouter func(
 	log *logrus.Entry,
 	server *server.Server,
 ) gin.HandlerFunc
