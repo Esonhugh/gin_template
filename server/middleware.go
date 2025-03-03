@@ -14,7 +14,7 @@ var ginLogger = logrus.WithField("service", "gin")
 
 func CreateTraceLogger(log *logrus.Entry, c *gin.Context) *logrus.Entry {
 	traceID := GetTraceID(c)
-	return log.WithField("trace_id", traceID)
+	return log.WithField("!trace_id", traceID)
 }
 
 func GetTraceID(c *gin.Context) string {
@@ -28,6 +28,9 @@ func TraceRequest(c *gin.Context) {
 }
 
 func WarpDBWithLogger(log *logrus.Entry, db *gorm.DB) *gorm.DB {
+	if db == nil {
+		return nil
+	}
 	db.Logger = database.NewLogger(log.WithField("service", "database"))
 	return db
 }

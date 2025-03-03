@@ -1,7 +1,8 @@
-app = "./app"
 
-build: 
+
+.PHONY: app
+app:
 	go build -o app .
 
-run:
-	$(app) serve
+run: app
+	./app serve
