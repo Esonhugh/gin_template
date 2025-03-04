@@ -1,6 +1,7 @@
 package log
 
 import (
+	"io"
 	"path"
 	"time"
 
@@ -13,15 +14,15 @@ import (
 // 请务必在 init() 阶段调用此函数
 // 否则会出现日志缺失
 // 日志存储位置 ./logs
-func WriteLogToFS() {
-	WriteLogToPath("logs")
+func WriteLogToFS() io.Writer {
+	return WriteLogToPath("logs")
 }
 
 // WriteLogToPath 将日志转储至文件
 // 请务必在 init() 阶段调用此函数
 // 否则会出现日志缺失
 // 日志存储位置 p
-func WriteLogToPath(p string) {
+func WriteLogToPath(p string) io.Writer {
 	writer, err := rotatelogs.New(
 		path.Join(p, "%Y-%m-%d.log"),
 		rotatelogs.WithMaxAge(7*24*time.Hour),
@@ -29,7 +30,7 @@ func WriteLogToPath(p string) {
 	)
 	if err != nil {
 		logrus.WithError(err).Error("unable to write logs")
-		return
+		return nil
 	}
 	logrus.AddHook(lfshook.NewHook(
 		lfshook.WriterMap{
@@ -39,4 +40,5 @@ func WriteLogToPath(p string) {
 			logrus.FatalLevel: writer,
 		}, &logrus.JSONFormatter{},
 	))
+	return writer
 }

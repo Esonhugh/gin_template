@@ -43,7 +43,7 @@ func (m *health) PostInit(server *server.Server) {
 
 func (m *health) Serve(server *server.Server) {
 	// 注册服务函数部分
-	server.HttpEngine.GET("/health", healthHandler(m.log.WithField("func", "healthHandler"), server))
+	server.HttpEngine.POST("/health", healthHandler(m.log.WithField("func", "healthHandler"), server))
 }
 
 func (m *health) Start(server *server.Server) {
@@ -77,7 +77,8 @@ func healthHandler(l *logrus.Entry, server *server.Server) gin.HandlerFunc {
 			"msg":        "pong",
 			"User-Agent": c.GetHeader("User-Agent"),
 		})
-		log.Info("health check")
+		ar, _ := c.GetPostFormArray("test")
+		log.Info("health check", ar[0])
 		return
 	}
 }

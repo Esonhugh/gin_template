@@ -1,6 +1,7 @@
 package serve
 
 import (
+	"io"
 	"os"
 	"os/signal"
 
@@ -14,7 +15,9 @@ import (
 
 func init() {
 	cmd.RootCmd.AddCommand(ServerCmd)
-	log.WriteLogToFS()
+	_ = io.MultiWriter(os.Stdout, log.WriteLogToFS())
+	// gin.DefaultWriter = mWriter
+	// gin.DefaultErrorWriter = mWriter
 }
 
 var ServerCmd = &cobra.Command{

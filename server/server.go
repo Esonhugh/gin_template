@@ -52,7 +52,7 @@ func Run() {
 		if err := Instance.HttpEngine.Run("0.0.0.0:9955"); err != nil {
 			logger.Fatal(err)
 		} else {
-			logger.Info("http engine running...")
+			logger.Info("http engine running at 0.0.0.0:9955")
 		}
 	}()
 }
