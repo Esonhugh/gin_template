@@ -31,8 +31,10 @@ func WarpDBWithLogger(log *logrus.Entry, db *gorm.DB) *gorm.DB {
 	if db == nil {
 		return nil
 	}
-	db.Logger = database.NewLogger(log.WithField("service", "database"))
-	return db
+	logger := database.NewLogger(log.WithField("service", "database"))
+	return db.Session(&gorm.Session{
+		Logger: logger,
+	})
 }
 
 func ginRequestLog() gin.HandlerFunc {
